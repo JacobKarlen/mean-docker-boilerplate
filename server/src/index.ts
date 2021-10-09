@@ -1,9 +1,10 @@
-import express from "express";
+import express, { application } from "express";
 import { config } from "./config";
-import mongoose from "mongoose";
+import mongoose, { Error } from "mongoose";
 import { router } from "./routes";
 
-import { UserModel } from "./models/user";
+import { userRouter } from "./routes/user-routes";
+import { UserModel, UserDoc } from "./models/user";
 // require-syntax used to parse json doc
 const USERS = require("./data/users.json");
 
@@ -17,14 +18,10 @@ mongoose.connection.on('error', function(err: Error) {
 });
 
 // populate db with users if collection doesn't exit
-mongoose.connection.on('open', function() {
-    mongoose.connection.db.listCollections({name: 'UserModel'})
-        .next(function(err, collinfo) {
-            if (collinfo) {
-                UserModel.collection.deleteMany({}).then(() => console.log("All users deleted"));
-                UserModel.collection.insertMany(USERS).then(() => console.log("Inserted users from JSON"));
-            }
-        });
+UserModel.findOne({}, async (err: Error, doc: UserDoc) => {
+    if (!doc) {
+        UserModel.collection.insertMany(USERS).then(() => console.log("Inserted users from JSON"));
+    }
 });
 
  
@@ -36,5 +33,6 @@ app.use(function(req: express.Request, res: express.Response, next: express.Next
 });
 
 app.use("/", router);
+app.use('/', userRouter);
  
 app.listen(config.port, () => console.log(`Example app listening on ${config.port}!`));
