@@ -1,0 +1,37 @@
+version: '3' # specify docker-compose version
+ 
+# Define the services/containers to be run
+services:
+ client:
+   build: ./client
+   ports:
+     - "4200:4200"
+     - "9229:9229"
+   volumes:
+      - ./client/src:/usr/src/app/src
+ server: # name of the first service
+    build: 
+      context: ./server # specify the directory of the Dockerfile
+      target: base
+    ports:
+     - "8080:8080"
+    environment:
+     - MONGO_URL=mongodb://database/mean-app
+    volumes:
+     - ./server/src:/usr/src/app/src
+     - ./server/nodemon.json:/usr/src/app/nodemon.json
+    links:
+     - database
+    depends_on:
+     - database
+    command: npm run dev
+ database: # name of the third service
+   image: mongo # specify image to build container from
+   volumes:
+     - mongodb:/data/db
+     - mongodb_config:/data/configdb
+   ports:
+     - "27017:27017" # specify port forewarding
+volumes:
+  mongodb:
+  mongodb_config:
