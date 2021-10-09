@@ -3,6 +3,10 @@ import { config } from "./config";
 import mongoose from "mongoose";
 import { router } from "./routes";
 
+import { UserModel } from "./models/user";
+// require-syntax used to parse json doc
+const USERS = require("./data/users.json");
+
 const app = express();
 
 // Connect to MongoDB
@@ -12,6 +16,16 @@ mongoose.connection.on('error', function(err: Error) {
  console.error('MongoDB connection error: ' + err);
 });
 
+// populate db with users if collection doesn't exit
+mongoose.connection.on('open', function() {
+    mongoose.connection.db.listCollections({name: 'UserModel'})
+        .next(function(err, collinfo) {
+            if (collinfo) {
+                UserModel.collection.deleteMany({}).then(() => console.log("All users deleted"));
+                UserModel.collection.insertMany(USERS).then(() => console.log("Inserted users from JSON"));
+            }
+        });
+});
 
  
 // Cross Origin middleware
