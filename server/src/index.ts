@@ -1,9 +1,18 @@
 import express from "express";
 import { config } from "./config";
-
+import mongoose from "mongoose";
 import { router } from "./routes";
 
 const app = express();
+
+// Connect to MongoDB
+console.log('Connection to mongoDb on uri: ' + config.mongo.uri);
+mongoose.connect(config.mongo.uri, config.mongo.options);
+mongoose.connection.on('error', function(err: Error) {
+ console.error('MongoDB connection error: ' + err);
+});
+
+
  
 // Cross Origin middleware
 app.use(function(req: express.Request, res: express.Response, next: express.NextFunction) {
