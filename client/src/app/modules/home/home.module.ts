@@ -1,0 +1,17 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { UserlistComponent } from './components/userlist/userlist.component';
+import { HomePageComponent } from './pages/home-page/home-page.component';
+
+
+
+@NgModule({
+  declarations: [
+    UserlistComponent,
+    HomePageComponent
+  ],
+  imports: [
+    CommonModule
+  ]
+})
+export class HomeModule { }
