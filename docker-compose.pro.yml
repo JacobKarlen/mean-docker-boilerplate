@@ -1,0 +1,31 @@
+version: '3' # specify docker-compose version
+ 
+# Define the services/containers to be run
+services:
+ client: # name of the first service
+   build: ./client
+   ports:
+     - "80:80"
+ server: # name of the second service
+    build: 
+      context: ./server # specify the directory of the Dockerfile
+      target: base
+    ports:
+     - "8080:8080"
+    environment:
+     - MONGO_URL=mongodb://database/mean-app
+    links:
+     - database
+    depends_on:
+     - database
+    command: sh -c "npm run build && npm run start"
+ database: # name of the third service
+   image: mongo # specify image to build container from
+   volumes:
+     - mongodb:/data/db
+     - mongodb_config:/data/configdb
+   ports:
+     - "27017:27017" # specify port forewarding
+volumes:
+  mongodb:
+  mongodb_config:

@@ -1,18 +1,25 @@
-FROM node:16-alpine3.11
+# Stage 1: build and compile
+FROM node:16-alpine3.11 as build-stage
  
 WORKDIR /usr/src/app
  
-# Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
 COPY package*.json .
  
-# Install any needed packages
+# Install app dependencies
 RUN npm i
  
 # Bundle app source
 COPY . .
+
+ARG configuration=production
+
+RUN echo "Configuration: $configuration"
  
-EXPOSE 4200
- 
-CMD [ "npm", "start" ]
+RUN npm run build -- --output-path=./dist/out --configuration $configuration
+
+# Stage 2: Nginx
+FROM nginx:alpine
+
+COPY --from=build-stage /usr/src/app/dist/out /usr/share/nginx/html
+COPY --from=build-stage /usr/src/app/nginx.conf /etc/nginx/conf.d/default.conf
