@@ -2,11 +2,11 @@ version: '3' # specify docker-compose version
  
 # Define the services/containers to be run
 services:
- client: # name of the first service
+ client: # service name for Angular client
    build: ./client
    ports:
      - "80:80"
- server: # name of the second service
+ server: # service name for Node + Express server
     build: 
       context: ./server # specify the directory of the Dockerfile
       target: base
@@ -19,7 +19,7 @@ services:
     depends_on:
      - database
     command: sh -c "npm run build && npm run start"
- database: # name of the third service
+ database: # service name for MongoDB database
    image: mongo # specify image to build container from
    volumes:
      - mongodb:/data/db
