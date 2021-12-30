@@ -3,9 +3,11 @@ version: '3' # specify docker-compose version
 # Define the services/containers to be run
 services:
  client:
-   build: ./client
+   build: 
+      context: ./client
+      dockerfile: Dockerfile.dev
    ports:
-     - "4200:4200"
+     - "80:4200"
      - "9229:9229"
    volumes:
       - ./client/src:/usr/src/app/src
