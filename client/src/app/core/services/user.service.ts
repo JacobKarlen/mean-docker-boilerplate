@@ -3,17 +3,21 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User } from '../../shared/models/user';
 import { Observable } from 'rxjs';
 
+import { environment } from 'src/environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  private usersURL = 'http://localhost:8080/users/';
+  private apiEndpoint = environment.apiEndpoint;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    console.log(this.apiEndpoint);
+  }
 
   getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.usersURL);
+    return this.http.get<User[]>(this.apiEndpoint + '/users');
   }
 
 }

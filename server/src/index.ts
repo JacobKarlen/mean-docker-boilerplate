@@ -32,7 +32,7 @@ app.use(function(req: express.Request, res: express.Response, next: express.Next
  next();
 });
 
-app.use("/", router);
-app.use('/', userRouter);
+app.use("/api", router);
+app.use('/api', userRouter);
  
 app.listen(config.port, () => console.log(`Example app listening on ${config.port}!`));
